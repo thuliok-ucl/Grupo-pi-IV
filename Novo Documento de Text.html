@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LED Switch</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #f3e7e9, #e3eeff);
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .container {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        #led {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            background-color: #ccc;
+            transition: background-color 0.5s, box-shadow 0.5s;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .led-off {
+            background-color: #ff6b6b;
+            background: radial-gradient(circle, #ff6b6b, #ff4757);
+        }
+        
+        .led-on {
+            background-color: #1dd1a1;
+            background: radial-gradient(circle, #1dd1a1, #10ac84);
+            box-shadow: 0 0 30px rgba(16, 172, 132, 0.7);
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            color: white;
+            background-color: #74b9ff;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        
+        button:hover {
+            background-color: #0984e3;
+            transform: scale(1.1);
+        }
+        
+        button:active {
+            transform: scale(0.9);
+        }
+        
+        #turnOffButton {
+            background-color: #ff7675;
+        }
+        
+        #turnOffButton:hover {
+            background-color: #d63031;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="led" class="led-off"></div>
+        <div class="buttons">
+            <button id="turnOnButton" onclick="turnOnLED()">Ligar</button>
+            <button id="turnOffButton" onclick="turnOffLED()">Desligar</button>
+        </div>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
+    <script>
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+         apiKey: "AIzaSyDYCi-dZe9TE41R5B8Wid8pg6PVtWuoHE8",
+        authDomain: "agroucl.firebaseapp.com",
+        databaseURL: "https://agroucl-default-rtdb.firebaseio.com",
+        projectId: "agroucl",
+        storageBucket: "agroucl.appspot.com",
+        messagingSenderId: "915400744363",
+        appId: "1:915400744363:web:500ced47406b81be5f46ee",
+        measurementId: "G-MH11N45216"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        function updateLED(state) {
+            const led = document.getElementById('led');
+            if (state === 'on') {
+                led.classList.remove('led-off');
+                led.classList.add('led-on');
+            } else {
+                led.classList.remove('led-on');
+                led.classList.add('led-off');
+            }
+        }
+
+        function turnOnLED() {
+            database.ref('led').set('on');
+        }
+
+        function turnOffLED() {
+            database.ref('led').set('off');
+        }
+
+        // Realtime listener
+        database.ref('led').on('value', (snapshot) => {
+            updateLED(snapshot.val());
+        });
+    </script>
+    
+</body>
+</html>
